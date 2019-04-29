@@ -41,8 +41,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.ISThreads;
-import NPB3_0_JAV.*;
-import NPB3_0_JAV.IS;
+import npb3.IS;
 import npb3.Timer;
 
 public class ISBase extends Thread{

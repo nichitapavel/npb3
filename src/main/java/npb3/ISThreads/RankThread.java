@@ -42,8 +42,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.ISThreads;
-import NPB3_0_JAV.IS;
-import NPB3_0_JAV.*;
+import npb3.IS;
 
 public class RankThread extends ISBase{
   public int id;
