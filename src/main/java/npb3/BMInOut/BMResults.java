@@ -95,7 +95,10 @@ public class BMResults implements Serializable{
       numthreads=num_threads;
   }
   
-  public void print(){    
+  public String print(){
+    StringBuilder str = new StringBuilder();
+    String lineSeparator = System.getProperty("line.separator");
+
     DecimalFormat fmt = new DecimalFormat("0.000");
     StringBuffer outbuf=new StringBuffer( "                                "
                                          +"                               *");
@@ -105,15 +108,17 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
-    
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
+
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
     outline=new String("* Class             = "+clss);
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
      
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -125,7 +130,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -133,15 +139,15 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
-    
+
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
     outline=new String("* Time in seconds   = "+fmt.format(time));
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -149,7 +155,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -157,7 +164,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -165,7 +173,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -175,7 +184,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString()); 
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     if(!serial){
       outbuf=new StringBuffer( "                          "
@@ -184,12 +194,14 @@ public class BMResults implements Serializable{
       outbuf.insert(0,outline);
       outbuf.setLength(len);
       outbuf.insert(len-1,"*");
-      System.out.println(outbuf.toString());
+      str.append(outbuf.toString());
+      str.append(lineSeparator);
     }
     
     outbuf=new StringBuffer( "*                               "
                             +"                               *");     
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -197,7 +209,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -205,7 +218,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -213,7 +227,8 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
     outbuf=new StringBuffer( "                          "
                             +"                         *");     
@@ -222,9 +237,10 @@ public class BMResults implements Serializable{
     outbuf.insert(0,outline);
     outbuf.setLength(len);
     outbuf.insert(len-1,"*");
-    System.out.println(outbuf.toString());
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
     
-    if(out!=null){
+/*    if(out!=null){
       try{
  	outline="***** NAS Parallel Benchmarks Java version (NPB3_0_JAV) "
 	              +name+" Report *****";
@@ -276,7 +292,8 @@ public class BMResults implements Serializable{
       }catch(Exception e){
         System.err.println("Res.print: write file: "+e.toString());
       }
-    }    
+    }*/
+    return str.toString();
   }  
 
   public int getFromFile(String filename){
