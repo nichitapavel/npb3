@@ -43,6 +43,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3;
+import matrix.lib.HTTPData;
+import matrix.lib.Operation;
+import matrix.lib.TimeController;
 import npb3.ISThreads.*;
 import npb3.BMInOut.*;
 
@@ -59,102 +62,155 @@ public class IS extends ISBase{
     serial=ser;
     rng=new Random();
   }
-    
-  public static void main(String argv[] ){
-    IS is = null;
 
-    BMArgs.ParseCmdLineArgs(argv,BMName);
-    char CLSS=BMArgs.CLASS;
-    int np=BMArgs.num_threads;
-    boolean serial=BMArgs.serial;
+  public static void main(String argv[] ) {
+      IS is = null;
 
-    try{ 
-      is = new IS(CLSS,np,serial);
-    }catch(OutOfMemoryError e){
-      BMArgs.outOfMemoryMessage();
-      System.exit(0);
-    }	 
-    is.runBenchMark();
+      BMArgs.ParseCmdLineArgs(argv,BMName);
+      char CLSS = BMArgs.CLASS;
+      int np = BMArgs.num_threads;
+      boolean serial = BMArgs.serial;
+
+      try {
+          is = new IS(CLSS, np, serial);
+      } catch (OutOfMemoryError e) {
+          BMArgs.outOfMemoryMessage();
+          System.exit(0);
+      }
+      is.runBenchMark();
   }
-  
+
   public void run(){runBenchMark();}
 
   public void runBenchMark(){
-      BMArgs.Banner(BMName,CLASS,serial,num_threads);
-
-      System.out.println(" Size:  "+ TOTAL_KEYS 
-  			+" Iterations:   " + MAX_ITERATIONS);
-
-//Initialize timer	    
+      StringBuilder str = new StringBuilder();
+      //Initialize timer
       timer = new Timer();
       timer.resetTimer( 0 );
 
-//Generate random number sequence and subsequent keys on all procs 
-     initKeys(amult); // Random number gen seed 
-        			// Random number gen mult 
+      //Generate random number sequence and subsequent keys on all procs
+      initKeys(amult); // Random number gen seed
+      // Random number gen mult
 
-/* Do one interation for free (i.e., untimed) to guarantee initialization of  
-   all data and code pages and respective tables */
-      if(serial){
-        rank( 1 );
-      }else{  
-        setupThreads(this);
-        RankThread.iteration=1;       
-        doSort();
-        for(int i=0; i<MAX_KEY; i++ ){
-          master_hist[i] = 0;	 
-        }
+      freeIteration();
 
-        doSort();
-        partial_verify(1);
-      }
-/*Start verification counter */
+      /*Start verification counter */
       passed_verification = 0;
-      if( CLASS != 'S' ) System.out.println( "\n     iteration#");
+      //if( CLASS != 'S' ) System.out.println( "\n     iteration#");
 
       timer.start( 0 );
-/*This is the main iteration */
-      for(int it=1; it<=MAX_ITERATIONS; it++ ){
-          if( CLASS != 'S' ) System.out.println( "	  " + it);
-        if(serial){
-          rank(it);
-        }else{  
-          RankThread.iteration=it;    
-          doSort();
-          for(int i=0; i<MAX_KEY; i++ ){
-            master_hist[i] = 0;    
-          }
-          doSort();
-          partial_verify(it);
-  	}
-      }       
+      mainIteration();
       timer.stop( 0 );
 
-/*This tests that keys are in sequence: sorting of last ranked key seq
-  occurs here, but is an untimed operation			       */
-      full_verify();
-      int verified=0;
-      if( passed_verification == 5*MAX_ITERATIONS + 1 ) verified = 1;
+      str.append(verify());
+      System.out.println(str);
+  }
 
-      BMResults.printVerificationStatus(CLASS,verified,BMName); 
-      double tm = timer.readTimer( 0 );
-      BMResults res=new BMResults(BMName,
-        			  CLASS,
-        			  TOTAL_KEYS,
-        			  0,
-        			  0,
-        			  MAX_ITERATIONS,
-        			  tm,
-        			  getMOPS(tm,MAX_ITERATIONS,TOTAL_KEYS),
-        			  "keys ranked",
-        			  verified,
-        			  serial,
-        			  num_threads,
-        			  bid);
-      res.print();				  
-  }  
-      
-  public double getMOPS(double total_time,int niter,int num_keys){
+  public String runULL(String url, String device) {
+      StringBuilder str = new StringBuilder();
+
+      //Initialize timer
+      timer = new Timer();
+      timer.resetTimer( 0 );
+
+      //Generate random number sequence and subsequent keys on all procs
+      initKeys(amult); // Random number gen seed
+      // Random number gen mult
+
+      freeIteration();
+      /*Start verification counter */
+      passed_verification = 0;
+
+      // Marking start point ULL PMLib
+      try {
+          Thread.sleep(10000);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+      TimeController tc = new TimeController();
+      HTTPData httpData = new HTTPData(url);
+      httpData.setName(device);
+      tc.snapStart();
+      httpData.setData(tc.getStart(), Operation.XS);
+      httpData.sendData();
+
+      timer.start( 0 );
+      mainIteration();
+      timer.stop( 0 );
+
+      // Marking start point ULL PMLib
+      tc.snapFinish();
+      httpData.setData(tc.getFinish(), Operation.XF);
+      httpData.sendData();
+
+      str.append(verify());
+
+      return str.toString();
+  }
+
+    public void mainIteration() {
+        /*This is the main iteration */
+        for(int it=1; it<=MAX_ITERATIONS; it++ ){
+            //if( CLASS != 'S' ) System.out.println( "	  " + it);
+          if(serial){
+            rank(it);
+          }else{
+            RankThread.iteration=it;
+            doSort();
+            for(int i=0; i<MAX_KEY; i++ ){
+              master_hist[i] = 0;
+            }
+            doSort();
+            partial_verify(it);
+        }
+        }
+    }
+
+    public void freeIteration() {
+    /* Do one interation for free (i.e., untimed) to guarantee initialization of
+       all data and code pages and respective tables */
+        if(serial){
+          rank( 1 );
+        }else{
+          setupThreads(this);
+          RankThread.iteration=1;
+          doSort();
+          for(int i=0; i<MAX_KEY; i++ ){
+            master_hist[i] = 0;
+          }
+
+          doSort();
+          partial_verify(1);
+        }
+    }
+
+    public String verify() {
+    /*This tests that keys are in sequence: sorting of last ranked key seq
+      occurs here, but is an untimed operation			       */
+        full_verify();
+        int verified=0;
+        if( passed_verification == 5*MAX_ITERATIONS + 1 ) verified = 1;
+
+        //BMResults.printVerificationStatus(CLASS,verified,BMName);
+        double tm = timer.readTimer( 0 );
+        BMResults res=new BMResults(BMName,
+                        CLASS,
+                        TOTAL_KEYS,
+                        0,
+                        0,
+                        MAX_ITERATIONS,
+                        tm,
+                        getMOPS(tm,MAX_ITERATIONS,TOTAL_KEYS),
+                        "keys ranked",
+                        verified,
+                        serial,
+                        num_threads,
+                        bid);
+        return res.print();
+    }
+
+    public double getMOPS(double total_time,int niter,int num_keys){
     double mops = 0.0;
     if( total_time > 0 ){
       mops = (double) niter+num_keys;
@@ -163,14 +219,14 @@ public class IS extends ISBase{
     return mops;
   }
 
-  void rank( int iteration ){ 
+  void rank( int iteration ){
     key_array[iteration] = iteration;
     key_array[iteration+MAX_ITERATIONS] = MAX_KEY - iteration;
-    	    
+
     for(int  i=0; i<TEST_ARRAY_SIZE; i++ ){
-    	partial_verify_vals[i] = key_array[ test_index_array[i] ]; 
+       partial_verify_vals[i] = key_array[ test_index_array[i] ];
     }
-    	
+
     /*  Clear the work array */
     for(int i=0;i<MAX_KEY;i++) master_hist[i] = 0;
 
