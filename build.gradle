@@ -54,7 +54,7 @@ jar {
 
 dependencies {
     // Use JUnit test framework
-    // implementation 'es.ull.hpcg:matrix-lib:0.5.2'
-    implementation files('D:/Downloads/matrix-lib-0.5.2.jar')
+    implementation 'es.ull.hpcg:matrix-lib:0.5.2'
+    //implementation files('D:/Downloads/matrix-lib-0.5.2.jar')
     testImplementation 'junit:junit:4.12'
 }
