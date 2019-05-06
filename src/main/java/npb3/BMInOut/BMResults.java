@@ -342,7 +342,7 @@ public class BMResults implements Serializable{
       System.out.println(" Problem size unknown");
       System.out.println(BMName+"."+clss+": Verification Not Performed");
     }else if (verified==1) {
-      System.out.println(BMName+"."+clss+": Verification Successful");
+      //System.out.println(BMName+"."+clss+": Verification Successful");
     }else{
       System.out.println(BMName+"."+clss+": Verification Failed");
     }
