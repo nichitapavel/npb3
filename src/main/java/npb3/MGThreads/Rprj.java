@@ -40,8 +40,8 @@
 !	   M. Schultz							  !
 !-------------------------------------------------------------------------!
 */
-package NPB3_0_JAV.MGThreads;
-import NPB3_0_JAV.MG;
+package npb3.MGThreads;
+import npb3.MG;
 
 public class Rprj extends MGBase{
   public int id;

@@ -41,8 +41,8 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.MGThreads;
-import NPB3_0_JAV.*;
-import NPB3_0_JAV.MG;
+import npb3.*;
+import npb3.MG;
 
 public class MGBase extends Thread{
   public static final String BMName="MG";

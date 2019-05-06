@@ -41,7 +41,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.MGThreads;
-import NPB3_0_JAV.MG;
+import npb3.MG;
 
 public class Psinv extends MGBase{
   public int id;

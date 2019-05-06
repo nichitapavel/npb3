@@ -41,7 +41,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.MGThreads;
-import NPB3_0_JAV.MG;
+import npb3.MG;
 
 public class Interp extends MGBase{
   public int id;
@@ -51,7 +51,7 @@ public class Interp extends MGBase{
   public int n1, n2, n3;
   public int zoff, uoff;
 
-  int start,end,work;	      
+  int start,end,work;
   int state=0;
   double z1[],z2[],z3[];
 
