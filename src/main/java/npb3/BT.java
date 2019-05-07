@@ -47,6 +47,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3;
+import matrix.lib.HTTPData;
+import matrix.lib.Operation;
+import matrix.lib.TimeController;
 import npb3.BTThreads.*;
 import npb3.BMInOut.*;
 import java.io.*;
@@ -115,7 +118,7 @@ public class BT extends BTBase{
 
     for(int step=1;step<=niter;step++){   //niter
       if ( step % 20 == 0 || step == 1||step==niter) {   
-        System.out.println("Time step "+step);
+        //System.out.println("Time step "+step);
       }
       if(serial) adi_serial();
       else adi(); 
@@ -141,6 +144,87 @@ public class BT extends BTBase{
     results.print();				
     if(timeron) printTimers(t_names,trecs,time);
   }
+
+  public String runULL(String url, String device){
+      StringBuilder str = new StringBuilder();
+
+        int numTimers=t_last+1;
+        String t_names[] = new String[numTimers];
+        double trecs[] = new double[numTimers];
+        setTimers(t_names);
+        int niter=getInputPars();
+
+        set_constants();
+        initialize();
+        exact_rhs();
+
+        if(!serial) setupThreads(this);
+//---------------------------------------------------------------------
+//      do one time step to touch all code, and reinitialize
+//---------------------------------------------------------------------
+        if(serial) adi_serial();
+        else adi();
+        initialize();
+
+        timer.resetAllTimers();
+
+      try {
+          Thread.sleep(10000);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+      // Marking start point ULL PMLib
+      TimeController tc = new TimeController();
+      HTTPData httpData = new HTTPData(url);
+      httpData.setName(device);
+      tc.snapStart();
+      httpData.setData(tc.getStart(), Operation.XS);
+      httpData.sendData();
+
+        timer.start(t_total);
+
+        for(int step=1;step<=niter;step++){   //niter
+            if ( step % 20 == 0 || step == 1||step==niter) {
+                //System.out.println("Time step "+step);
+            }
+            if(serial) adi_serial();
+            else adi();
+        }
+
+        timer.stop(t_total);
+
+      // Marking stop point ULL PMLib
+      tc.snapFinish();
+      httpData.setData(tc.getFinish(), Operation.XF);
+      httpData.sendData();
+
+      try {
+          Thread.sleep(10000);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+        int verified = verify(niter);
+
+        double time = timer.readTimer(t_total);
+        results=new BMResults(BMName,
+                CLASS,
+                grid_points[0],
+                grid_points[1],
+                grid_points[2],
+                niter,
+                time,
+                getMFLOPS(time,niter),
+                "floating point",
+                verified,
+                serial,
+                num_threads,
+                bid);
+        if(timeron) printTimers(t_names,trecs,time);
+
+        return results.print();
+    }
   
   public double getMFLOPS(double total_time,int niter){
     double mflops = 0.0;
@@ -317,23 +401,23 @@ public class BT extends BTBase{
   	System.err.println("exception caught!");
       }
     }else{
-      System.out.println("No input file inputbt.data, Using compiled defaults");
+      // System.out.println("No input file inputbt.data, Using compiled defaults");
       niter = niter_default;
       dt    = dt_default;
       grid_points[0] = problem_size;
       grid_points[1] = problem_size;
       grid_points[2] = problem_size;
     }
-    System.out.println( "Size: "+grid_points[0]
-  		       +" X "+grid_points[1]
-  		       +" X "+grid_points[2]);
+    //System.out.println( "Size: "+grid_points[0]
+    //	       +" X "+grid_points[1]
+    //	       +" X "+grid_points[2]);
     if ( (grid_points[0] > IMAX) ||
   	 (grid_points[1] > JMAX) ||
   	 (grid_points[2] > KMAX) ) {
       System.out.println("Problem size too big for array");
       System.exit(0);
     }
-    System.out.println("Iterations: "+niter+" dt: "+dt); 
+    //System.out.println("Iterations: "+niter+" dt: "+dt);
     return niter;
   }
   
@@ -594,8 +678,8 @@ public class BT extends BTBase{
 //    Output the comparison of computed results to known cases.
 //---------------------------------------------------------------------
      if (clss != 'U') {
-       System.out.println("Verification being performed for class "+clss);
-       System.out.println("accuracy setting for epsilon = "+epsilon);
+       //System.out.println("Verification being performed for class "+clss);
+       //System.out.println("accuracy setting for epsilon = "+epsilon);
        if (Math.abs(dt-dtref) <= epsilon ) {
          verified = 1;
        }else{
@@ -607,18 +691,18 @@ public class BT extends BTBase{
        System.out.println("Unknown class");  
      }
      
-     if (clss != 'U') System.out.println("Comparison of RMS-norms of residual");
-     else System.out.println("RMS-norms of residual"); 
-     verified=BMResults.printComparisonStatus(clss,verified,epsilon,
-                                              xcr,xcrref,xcrdif);
+     //if (clss != 'U') System.out.println("Comparison of RMS-norms of residual");
+     //else System.out.println("RMS-norms of residual");
+     //verified=BMResults.printComparisonStatus(clss,verified,epsilon,
+     //                                         xcr,xcrref,xcrdif);
 
      if (clss != 'U') {
-       System.out.println("Comparison of RMS-norms of solution error");
+       //System.out.println("Comparison of RMS-norms of solution error");
      }else{
        System.out.println("RMS-norms of solution error");
      }
-     verified=BMResults.printComparisonStatus(clss,verified,epsilon,
-                                              xce,xceref,xcedif);
+     //verified=BMResults.printComparisonStatus(clss,verified,epsilon,
+     //                                         xce,xceref,xcedif);
 
      BMResults.printVerificationStatus(clss,verified,BMName); 
      return verified;
