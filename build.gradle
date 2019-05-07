@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'gov.nasa.nas'
-version '0.1-beta-06'
+version '0.1-beta-09'
 
 repositories {
     // Use jcenter for resolving your dependencies.
