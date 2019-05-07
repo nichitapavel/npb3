@@ -144,6 +144,12 @@ public class IS extends ISBase{
       httpData.setData(tc.getFinish(), Operation.XF);
       httpData.sendData();
 
+      try {
+          Thread.sleep(10000);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
       str.append(verify());
 
       return str.toString();
