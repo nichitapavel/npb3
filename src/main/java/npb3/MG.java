@@ -206,6 +206,12 @@ public class MG extends MGBase{
 
         timer.stop(T_init);
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Marking start point ULL PMLib
         TimeController tc = new TimeController();
         HTTPData httpData = new HTTPData(url);
@@ -213,12 +219,6 @@ public class MG extends MGBase{
         tc.snapStart();
         httpData.setData(tc.getStart(), Operation.XS);
         httpData.sendData();
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         timer.start(T_bench);
         if (timeron) timer.start(T_resid2);
@@ -242,6 +242,12 @@ public class MG extends MGBase{
         tc.snapFinish();
         httpData.setData(tc.getFinish(), Operation.XF);
         httpData.sendData();
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         double tinit = timer.readTimer(T_init);
         System.out.println(" Initialization time: "+tinit+" seconds");
