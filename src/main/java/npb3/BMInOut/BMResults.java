@@ -187,17 +187,15 @@ public class BMResults implements Serializable{
     str.append(outbuf.toString());
     str.append(lineSeparator);
     
-    if(!serial){
-      outbuf=new StringBuffer( "                          "
-                              +"                         *");     
-      outline=new String("* Threads requested = "+numthreads);
-      outbuf.insert(0,outline);
-      outbuf.setLength(len);
-      outbuf.insert(len-1,"*");
-      str.append(outbuf.toString());
-      str.append(lineSeparator);
-    }
-    
+    outbuf=new StringBuffer( "                          "
+                            +"                         *");
+    outline=new String("* Threads requested = "+numthreads);
+    outbuf.insert(0,outline);
+    outbuf.setLength(len);
+    outbuf.insert(len-1,"*");
+    str.append(outbuf.toString());
+    str.append(lineSeparator);
+
     outbuf=new StringBuffer( "*                               "
                             +"                               *");     
     str.append(outbuf.toString());
