@@ -47,6 +47,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3;
+
 import matrix.lib.HTTPData;
 import matrix.lib.Operation;
 import matrix.lib.TimeController;
@@ -54,6 +55,7 @@ import npb3.BTThreads.*;
 import npb3.BMInOut.*;
 import java.io.*;
 import java.text.*;
+
 
 public class BT extends BTBase{
   public int bid=-1;

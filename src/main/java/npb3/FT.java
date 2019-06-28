@@ -52,10 +52,9 @@ import matrix.lib.TimeController;
 import npb3.BMInOut.BMArgs;
 import npb3.BMInOut.BMResults;
 import npb3.FTThreads.FTBase;
-
-import java.sql.Time;
 import java.text.*;
 import java.io.*;
+
 
 public class FT extends FTBase {
     public int bid=-1;

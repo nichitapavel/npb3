@@ -42,6 +42,7 @@
 */
 package npb3;
 
+
 public class Random{
 
   //default seed

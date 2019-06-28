@@ -41,8 +41,10 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.BTThreads;
+
 import npb3.BT;
 import npb3.Timer;
+
 
 public class BTBase extends Thread{
  

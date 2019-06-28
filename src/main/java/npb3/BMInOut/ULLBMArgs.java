@@ -1,5 +1,6 @@
 package npb3.BMInOut;
 
+
 public class ULLBMArgs extends BMArgs {
 
     public static String outOfMemoryMessageULL(){

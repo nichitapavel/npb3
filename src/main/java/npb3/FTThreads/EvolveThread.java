@@ -44,6 +44,7 @@ package npb3.FTThreads;
 
 import npb3.FT;
 
+
 public class EvolveThread extends FTBase{
   public int kt=0;
   public int id;

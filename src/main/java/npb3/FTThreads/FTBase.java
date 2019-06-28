@@ -36,6 +36,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.FTThreads;
+
 import npb3.FT;
 import npb3.Random;
 import npb3.Timer;

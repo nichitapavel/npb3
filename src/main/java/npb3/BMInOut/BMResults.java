@@ -40,8 +40,10 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.BMInOut;
+
 import java.io.*;
 import java.text.*;
+
 
 public class BMResults implements Serializable{
   public String name;

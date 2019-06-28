@@ -40,8 +40,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.BMInOut;
+
 import java.io.*;
-import java.text.*;
+
 
 public class BMArgs implements Serializable{
   public static char CLASS='U';

@@ -42,7 +42,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.ISThreads;
+
 import npb3.IS;
+
 
 public class RankThread extends ISBase{
   public int id;

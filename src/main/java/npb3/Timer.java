@@ -41,6 +41,7 @@
 */
 package npb3;
 
+
 public class Timer{
   public static final int max_counters=64;
   double start_time[]=new double[max_counters];

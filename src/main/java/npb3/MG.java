@@ -46,6 +46,7 @@
 !-------------------------------------------------------------------------!
 */
 package npb3;
+
 import matrix.lib.HTTPData;
 import matrix.lib.Operation;
 import matrix.lib.TimeController;
@@ -53,6 +54,7 @@ import npb3.MGThreads.*;
 import npb3.BMInOut.*;
 import java.io.*;
 import java.text.*;
+
 
 public class MG extends MGBase{
   public int bid=-1;

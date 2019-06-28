@@ -41,8 +41,10 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.ISThreads;
+
 import npb3.IS;
 import npb3.Timer;
+
 
 public class ISBase extends Thread{
   public static final String BMName="IS";

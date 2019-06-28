@@ -41,7 +41,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.MGThreads;
+
 import npb3.MG;
+
 
 public class Interp extends MGBase{
   public int id;

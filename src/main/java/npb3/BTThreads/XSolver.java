@@ -42,7 +42,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.BTThreads;
+
 import npb3.BT;
+
 
 public class XSolver extends BTBase{
   public int id;

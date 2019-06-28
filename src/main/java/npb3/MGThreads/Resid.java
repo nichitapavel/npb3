@@ -41,7 +41,9 @@
 !-------------------------------------------------------------------------!
 */
 package npb3.MGThreads;
+
 import npb3.MG;
+
 
 public class Resid extends MGBase{
   public int id;
