@@ -250,7 +250,7 @@ public class MG extends MGBase{
         }
 
         double tinit = timer.readTimer(T_init);
-        System.out.println(" Initialization time: "+tinit+" seconds");
+        // System.out.println(" Initialization time: "+tinit+" seconds");
         rnm2=norm2u3(r,n1,n2,n3,rnmu,nx[lt-1],ny[lt-1],nz[lt-1]);
         verified=verify(rnm2);
         double tm = timer.readTimer(T_bench);
