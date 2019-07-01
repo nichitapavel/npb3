@@ -705,15 +705,15 @@ public class FT extends FTBase {
         if(timeron) timer.stop(2);
 
         // **************************** ULL PMLib **************************** \\
-        tc.snapStart();
-        httpData.setData(tc.getStart(), Operation.XS);
-        httpData.sendData();
-
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        tc.snapStart();
+        httpData.setData(tc.getStart(), Operation.XS);
+        httpData.sendData();
         // **************************** ULL PMLib **************************** \\
 
         timer.start(1);
