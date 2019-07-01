@@ -49,6 +49,9 @@
 */
 package npb3;
 
+import matrix.lib.HTTPData;
+import matrix.lib.Operation;
+import matrix.lib.TimeController;
 import npb3.BMInOut.BMArgs;
 import npb3.BMInOut.BMResults;
 import npb3.SPThreads.SPBase;
@@ -312,24 +315,24 @@ public class SP extends SPBase {
 	System.err.println("exception caught!");
       }       
     }else{
-      System.out.println("No input file inputsp.data,"+
-                         "Using compiled defaults"); 
+      // System.out.println("No input file inputsp.data,"+
+      //                    "Using compiled defaults");
       niter = niter_default;
       dt    = dt_default;
       grid_points[0] = problem_size;
       grid_points[1] = problem_size;
       grid_points[2] = problem_size;
     }
-    System.out.println("Size: "+grid_points[0]
-                         +" X "+grid_points[1]
-			 +" X "+grid_points[2]);
+    // System.out.println("Size: "+grid_points[0]
+    //                      +" X "+grid_points[1]
+	// 		 +" X "+grid_points[2]);
     if ( (grid_points[0] > IMAX) ||
 	 (grid_points[1] > JMAX) ||
 	 (grid_points[2] > KMAX) ) {
       System.out.println("Problem size too big for array");
       System.exit(0);
     }
-    System.out.println("Iterations: "+niter+" dt: "+dt);
+    // System.out.println("Iterations: "+niter+" dt: "+dt);
     
     nx2 = grid_points[0] - 2;
     ny2 = grid_points[1] - 2;
@@ -1495,8 +1498,8 @@ public class SP extends SPBase {
 //    Output the comparison of computed results to known cases.
 //---------------------------------------------------------------------
     if (clss != 'U') {
-      System.out.println(" Verification being performed for class " + clss);
-      System.out.println(" Accuracy setting for epsilon = " + epsilon);
+      // System.out.println(" Verification being performed for class " + clss);
+      // System.out.println(" Accuracy setting for epsilon = " + epsilon);
       if (Math.abs(dt-dtref) <= epsilon) {  
         if(verified==-1) verified=1;
       }else{
@@ -1504,20 +1507,20 @@ public class SP extends SPBase {
 	clss = 'U';
 	System.out.println("DT does not match the reference value of " + dtref );
       }
-      System.out.println(" Comparison of RMS-norms of residual");
+      // System.out.println(" Comparison of RMS-norms of residual");
     }else{ 
       System.out.println(" Unknown CLASS");
       System.out.println(" RMS-norms of residual");
     }
-    verified=BMResults.printComparisonStatus(clss,verified,epsilon,
-                                             xcr,xcrref,xcrdif);
+    // verified=BMResults.printComparisonStatus(clss,verified,epsilon,
+    //                                          xcr,xcrref,xcrdif);
     if (clss != 'U') {
-      System.out.println(" Comparison of RMS-norms of solution error");
+      // System.out.println(" Comparison of RMS-norms of solution error");
     }else{
       System.out.println(" RMS-norms of solution error");
     }
-    verified=BMResults.printComparisonStatus(clss,verified,epsilon,
-                                             xce,xceref,xcedif);
+    // verified=BMResults.printComparisonStatus(clss,verified,epsilon,
+    //                                          xce,xceref,xcedif);
 
     BMResults.printVerificationStatus(clss,verified,BMName); 
     return verified;
@@ -2406,10 +2409,68 @@ public class SP extends SPBase {
     System.out.println("LU: is about to be garbage collected"); 
     super.finalize();
   }
+
+    public String runULL(String url, String device){
+        int numTimers=t_last+1;
+        String t_names[] = new String[numTimers];
+        double trecs[] = new double[numTimers];
+        setTimers(t_names);
+//---------------------------------------------------------------------
+//      Read input file (if it exists), else take
+//      defaults from parameters
+//---------------------------------------------------------------------
+        int niter=getInputPars();
+        set_constants(0);
+        initialize();
+        exact_rhs();
+
+        if(!serial) setupThreads(this);
+//---------------------------------------------------------------------
+//      do one time step to touch all code, and reinitialize
+//---------------------------------------------------------------------
+        if(serial) adi_serial();
+        else adi();
+        initialize();
+
+        timer.resetAllTimers();
+
+        TimeController tc = new TimeController();
+        HTTPData httpData = new HTTPData(url);
+        httpData.setName(device);
+        tc.snapStart();
+        httpData.setData(tc.getStart(), Operation.XS);
+        httpData.sendData();
+
+        timer.start(t_total);
+        for(int step = 1;step<=niter;step++){
+            if (step%20== 0||step==1||step==niter) {
+                // System.out.println("Time step " + step);
+            }
+            if(serial) adi_serial();
+            else adi();
+        }
+        timer.stop(1);
+        tc.snapFinish();
+        httpData.setData(tc.getFinish(), Operation.XF);
+        httpData.sendData();
+
+        int verified = verify(niter);
+
+        double time = timer.readTimer(t_total);
+        results=new BMResults(BMName,
+                CLASS,
+                grid_points[0],
+                grid_points[1],
+                grid_points[2],
+                niter,
+                time,
+                getMFLOPS(time,niter),
+                "floating point",
+                verified,
+                serial,
+                num_threads,
+                bid);
+        if(timeron) printTimers(t_names,trecs,time);
+        return results.print();
+    }
 }
-
-
-
-
-
-

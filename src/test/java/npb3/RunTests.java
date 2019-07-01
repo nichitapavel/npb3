@@ -90,5 +90,18 @@ public class RunTests {
         System.out.println(lu.runULL("http://localhost:5000/message", "JUnit"));
         assertTrue(true);
     }
+
+    @Test
+    public void testRunSPULL() {
+        SP sp = null;
+        try{
+            sp = new SP('S', 1, true);
+        }catch(OutOfMemoryError e){
+            BMArgs.outOfMemoryMessage();
+            System.exit(0);
+        }
+        System.out.println(sp.runULL("http://localhost:5000/message", "JUnit"));
+        assertTrue(true);
+    }
 }
 
