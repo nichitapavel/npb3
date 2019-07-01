@@ -110,6 +110,9 @@ public class IS extends ISBase{
 
   public String runULL(String url, String device) {
       StringBuilder str = new StringBuilder();
+      TimeController tc = new TimeController();
+      HTTPData httpData = new HTTPData(url);
+      httpData.setName(device);
 
       //Initialize timer
       timer = new Timer();
@@ -123,25 +126,23 @@ public class IS extends ISBase{
       /*Start verification counter */
       passed_verification = 0;
 
-      // Marking start point ULL PMLib
+      // **************************** ULL PMLib **************************** \\
       try {
           Thread.sleep(10000);
       } catch (InterruptedException e) {
           e.printStackTrace();
       }
 
-      TimeController tc = new TimeController();
-      HTTPData httpData = new HTTPData(url);
-      httpData.setName(device);
       tc.snapStart();
       httpData.setData(tc.getStart(), Operation.XS);
       httpData.sendData();
+      // **************************** ULL PMLib **************************** \\
 
       timer.start( 0 );
       mainIteration();
       timer.stop( 0 );
 
-      // Marking start point ULL PMLib
+      // **************************** ULL PMLib **************************** \\
       tc.snapFinish();
       httpData.setData(tc.getFinish(), Operation.XF);
       httpData.sendData();
@@ -151,6 +152,7 @@ public class IS extends ISBase{
       } catch (InterruptedException e) {
           e.printStackTrace();
       }
+      // **************************** ULL PMLib **************************** \\
 
       str.append(verify());
 

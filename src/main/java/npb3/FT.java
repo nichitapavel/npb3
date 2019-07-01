@@ -571,21 +571,15 @@ public class FT extends FTBase {
         // BMArgs.Banner(BMName,CLASS,serial,num_threads);
         // System.out.println( " Size = " + nx+" X " + ny+" X " + nz
         //         +" niter = "+niter_default);
-        setTimers();
-        timer.resetAllTimers();
-
-      try {
-          Thread.sleep(10000);
-      } catch (InterruptedException e) {
-          e.printStackTrace();
-      }
-
-
-        // Marking start point ULL PMLib
         TimeController tc = new TimeController();
         HTTPData httpData = new HTTPData(url);
         httpData.setName(device);
+        setTimers();
+        timer.resetAllTimers();
 
+        // **************************** ULL PMLib **************************** \\
+        // start point marking is in appft_serial_ULL and appft_ULL            \\
+        // **************************** ULL PMLib **************************** \\
         if(serial) appft_serial_ULL(tc, httpData);
         else appft_ULL(tc, httpData);
 
@@ -594,7 +588,7 @@ public class FT extends FTBase {
         if(timeron) timer.stop(14);
         timer.stop(1);
 
-        // Marking stop point ULL PMLib
+        // **************************** ULL PMLib **************************** \\
         tc.snapFinish();
         httpData.setData(tc.getFinish(), Operation.XF);
         httpData.sendData();
@@ -604,6 +598,7 @@ public class FT extends FTBase {
       } catch (InterruptedException e) {
           e.printStackTrace();
       }
+        // **************************** ULL PMLib **************************** \\
 
         double time=timer.readTimer(1);
         results=new BMResults(BMName,
@@ -633,10 +628,17 @@ public class FT extends FTBase {
         fftXYZ(1, xtr, exp2, exp1, exp3,ny,nx,nz);
         if(timeron) timer.stop(2);
 
-        // ************************************************************************************* \\
+        // **************************** ULL PMLib **************************** \\
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         tc.snapStart();
         httpData.setData(tc.getStart(), Operation.XS);
         httpData.sendData();
+        // **************************** ULL PMLib **************************** \\
 
 
         timer.start(1);
@@ -702,11 +704,17 @@ public class FT extends FTBase {
         doFFT();
         if(timeron) timer.stop(2);
 
-        // ************************************************************************************* \\
+        // **************************** ULL PMLib **************************** \\
         tc.snapStart();
         httpData.setData(tc.getStart(), Operation.XS);
         httpData.sendData();
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // **************************** ULL PMLib **************************** \\
 
         timer.start(1);
         if(timeron) timer.start(12);

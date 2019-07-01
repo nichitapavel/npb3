@@ -732,6 +732,9 @@ public class CG extends CGBase {
 	int i, j, k, it;
 	double zeta;
 	double rnorm=0;
+	  TimeController tc = new TimeController();
+	  HTTPData httpData = new HTTPData(url);
+	  httpData.setName(device);
 
 	// BMArgs.Banner(BMName,CLASS,serial,num_threads);
 	// System.out.println(" Size: " + na +" Iterations: " + niter );
@@ -811,19 +814,17 @@ public class CG extends CGBase {
 
 	timer.stop( t_init );
 
-    try {
-    	Thread.sleep(10000);
-	} catch (InterruptedException e) {
-    	e.printStackTrace();
-	}
+	  // **************************** ULL PMLib **************************** \\
+      try {
+        Thread.sleep(10000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
 
-    // Marking start point ULL PMLib
-    TimeController tc = new TimeController();
-    HTTPData httpData = new HTTPData(url);
-    httpData.setName(device);
-    tc.snapStart();
-    httpData.setData(tc.getStart(), Operation.XS);
-    httpData.sendData();
+      tc.snapStart();
+      httpData.setData(tc.getStart(), Operation.XS);
+      httpData.sendData();
+	  // **************************** ULL PMLib **************************** \\
 
 	timer.start( t_bench );
 //---------------------------------------------------------------------
@@ -882,16 +883,17 @@ public class CG extends CGBase {
 	}
 	timer.stop(t_bench);
 
-	// Marking stop point ULL PMLib
-	tc.snapFinish();
-	httpData.setData(tc.getFinish(), Operation.XF);
-	httpData.sendData();
+	    // **************************** ULL PMLib **************************** \\
+		tc.snapFinish();
+		httpData.setData(tc.getFinish(), Operation.XF);
+		httpData.sendData();
 
-	try {
-	  Thread.sleep(10000);
-	} catch (InterruptedException e) {
-	  e.printStackTrace();
-	}
+        try {
+          Thread.sleep(10000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+	    // **************************** ULL PMLib **************************** \\
 
 //---------------------------------------------------------------------
 //  End of timed section

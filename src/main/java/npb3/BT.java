@@ -148,13 +148,14 @@ public class BT extends BTBase{
   }
 
   public String runULL(String url, String device){
-      StringBuilder str = new StringBuilder();
-
         int numTimers=t_last+1;
         String t_names[] = new String[numTimers];
         double trecs[] = new double[numTimers];
         setTimers(t_names);
         int niter=getInputPars();
+      TimeController tc = new TimeController();
+      HTTPData httpData = new HTTPData(url);
+      httpData.setName(device);
 
         set_constants();
         initialize();
@@ -170,19 +171,17 @@ public class BT extends BTBase{
 
         timer.resetAllTimers();
 
+      // **************************** ULL PMLib **************************** \\
       try {
           Thread.sleep(10000);
       } catch (InterruptedException e) {
           e.printStackTrace();
       }
 
-      // Marking start point ULL PMLib
-      TimeController tc = new TimeController();
-      HTTPData httpData = new HTTPData(url);
-      httpData.setName(device);
       tc.snapStart();
       httpData.setData(tc.getStart(), Operation.XS);
       httpData.sendData();
+      // **************************** ULL PMLib **************************** \\
 
         timer.start(t_total);
 
@@ -196,7 +195,7 @@ public class BT extends BTBase{
 
         timer.stop(t_total);
 
-      // Marking stop point ULL PMLib
+      // **************************** ULL PMLib **************************** \\
       tc.snapFinish();
       httpData.setData(tc.getFinish(), Operation.XF);
       httpData.sendData();
@@ -206,6 +205,7 @@ public class BT extends BTBase{
       } catch (InterruptedException e) {
           e.printStackTrace();
       }
+      // **************************** ULL PMLib **************************** \\
 
         int verified = verify(niter);
 

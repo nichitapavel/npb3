@@ -172,9 +172,10 @@ public class MG extends MGBase{
     }
 
     public String runULL(String url, String device){
-        StringBuilder str = new StringBuilder();
-
         int niter=getInputPars();
+        TimeController tc = new TimeController();
+        HTTPData httpData = new HTTPData(url);
+        httpData.setName(device);
 
         nsizes=new int[3];
         setup(nsizes);
@@ -208,19 +209,17 @@ public class MG extends MGBase{
 
         timer.stop(T_init);
 
+        // **************************** ULL PMLib **************************** \\
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Marking start point ULL PMLib
-        TimeController tc = new TimeController();
-        HTTPData httpData = new HTTPData(url);
-        httpData.setName(device);
         tc.snapStart();
         httpData.setData(tc.getStart(), Operation.XS);
         httpData.sendData();
+        // **************************** ULL PMLib **************************** \\
 
         timer.start(T_bench);
         if (timeron) timer.start(T_resid2);
@@ -240,7 +239,7 @@ public class MG extends MGBase{
         }
         timer.stop(T_bench);
 
-        // Marking stop point ULL PMLib
+        // **************************** ULL PMLib **************************** \\
         tc.snapFinish();
         httpData.setData(tc.getFinish(), Operation.XF);
         httpData.sendData();
@@ -250,6 +249,7 @@ public class MG extends MGBase{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        // **************************** ULL PMLib **************************** \\
 
         double tinit = timer.readTimer(T_init);
         // System.out.println(" Initialization time: "+tinit+" seconds");

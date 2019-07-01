@@ -2415,6 +2415,9 @@ public class SP extends SPBase {
         String t_names[] = new String[numTimers];
         double trecs[] = new double[numTimers];
         setTimers(t_names);
+        TimeController tc = new TimeController();
+        HTTPData httpData = new HTTPData(url);
+        httpData.setName(device);
 //---------------------------------------------------------------------
 //      Read input file (if it exists), else take
 //      defaults from parameters
@@ -2434,12 +2437,17 @@ public class SP extends SPBase {
 
         timer.resetAllTimers();
 
-        TimeController tc = new TimeController();
-        HTTPData httpData = new HTTPData(url);
-        httpData.setName(device);
+        // **************************** ULL PMLib **************************** \\
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         tc.snapStart();
         httpData.setData(tc.getStart(), Operation.XS);
         httpData.sendData();
+        // **************************** ULL PMLib **************************** \\
 
         timer.start(t_total);
         for(int step = 1;step<=niter;step++){
@@ -2450,9 +2458,18 @@ public class SP extends SPBase {
             else adi();
         }
         timer.stop(1);
+
+        // **************************** ULL PMLib **************************** \\
         tc.snapFinish();
         httpData.setData(tc.getFinish(), Operation.XF);
         httpData.sendData();
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // **************************** ULL PMLib **************************** \\
 
         int verified = verify(niter);
 
