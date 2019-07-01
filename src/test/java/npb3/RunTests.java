@@ -4,6 +4,7 @@ import npb3.BMInOut.BMArgs;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
+
 public class RunTests {
     @Test
     public void testRunBT() {
@@ -21,7 +22,7 @@ public class RunTests {
     public void testRunIS() {
         IS is = null;
         try{
-            is = new IS('B', 1, true);
+            is = new IS('S', 1, true);
         }catch(OutOfMemoryError e){
             BMArgs.outOfMemoryMessage();
         }
@@ -54,7 +55,7 @@ public class RunTests {
     }
 
     @Test
-    public void testRunFTULL() {
+    public void testRunFT() {
         FT ft = null;
         try{
             ft = new FT('S', 1, true);
@@ -66,23 +67,10 @@ public class RunTests {
     }
 
     @Test
-    public void testRunFT() {
-        FT ft = null;
-        try{
-            ft = new FT('S', 2, false);
-        }catch(OutOfMemoryError e){
-            BMArgs.outOfMemoryMessage();
-            System.exit(0);
-        }
-        ft.runBenchMark();
-        assertTrue(true);
-    }
-
-    @Test
-    public void testRunLUULL() {
+    public void testRunLU() {
         LU lu = null;
         try{
-            lu = new LU('S', 2, false);
+            lu = new LU('S', 1, true);
         }catch(OutOfMemoryError e){
             BMArgs.outOfMemoryMessage();
             System.exit(0);
@@ -92,7 +80,7 @@ public class RunTests {
     }
 
     @Test
-    public void testRunSPULL() {
+    public void testRunSP() {
         SP sp = null;
         try{
             sp = new SP('S', 1, true);
