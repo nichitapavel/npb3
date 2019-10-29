@@ -96,8 +96,6 @@ task installRelease(type: GradleBuild, dependsOn: install) {}
 task installDebug(type: GradleBuild, dependsOn: install) {}
 
 dependencies {
-    // Use JUnit test framework
-    implementation 'es.ull.hpcg:matrix-lib:0.5.2'
-    //implementation files('D:/Downloads/matrix-lib-0.5.2.jar')
     testImplementation 'junit:junit:4.12'
+    implementation 'es.ull.hpcg:matrix-lib:0.5.3-beta-04'
 }
