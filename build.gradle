@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'gov.nasa.nas'
-version '0.2'
+version '0.2.2-beta-02'
 
 ext.GitHubPackagesClosure = {
     name = 'GitHubPackages'
