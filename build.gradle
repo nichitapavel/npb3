@@ -14,30 +14,52 @@ plugins {
 }
 
 group 'gov.nasa.nas'
-version '0.2'
+version '0.2.2-beta-02'
+
+ext.GitHubPackagesClosure = {
+    name = 'GitHubPackages'
+    url = uri('https://maven.pkg.github.com/HPC-ULL/SBCs-EnergyEfficiency')
+    credentials {
+        username = project.findProperty('gpr.user') ?: System.getenv('GPR_USER')
+        password = project.findProperty('gpr.key') ?: System.getenv('GPR_API_KEY')
+    }
+}
+
+// helper function to return a "curried" closure
+Closure GitHubPackages() {
+    return GitHubPackagesClosure.curry()
+}
 
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenLocal()
+    maven GitHubPackages()
 }
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
     archiveClassifier = 'sources'
+    from sourceSets.main.allJava
 }
 
-//publishing {
-//    //...
-//    publications {
-//        mavenJava(MavenPublication) {
-//            from components.java
-//            artifact tasks.sourceJar
-//            //artifact tasks.yourJavadocTask
-//        }
-//    }
-//}
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    repositories {
+        maven GitHubPackages()
+    }
+    publications {
+        gpr(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
 
 jar {
     manifest {
@@ -74,8 +96,6 @@ task installRelease(type: GradleBuild, dependsOn: install) {}
 task installDebug(type: GradleBuild, dependsOn: install) {}
 
 dependencies {
-    // Use JUnit test framework
-    implementation 'es.ull.hpcg:matrix-lib:0.5.2'
-    //implementation files('D:/Downloads/matrix-lib-0.5.2.jar')
     testImplementation 'junit:junit:4.12'
+    implementation 'es.ull.hpcg:matrix-lib:0.5.3-beta-04'
 }
