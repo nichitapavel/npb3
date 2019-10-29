@@ -16,11 +16,26 @@ plugins {
 group 'gov.nasa.nas'
 version '0.2'
 
+ext.GitHubPackagesClosure = {
+    name = 'GitHubPackages'
+    url = uri('https://maven.pkg.github.com/HPC-ULL/SBCs-EnergyEfficiency')
+    credentials {
+        username = project.findProperty('gpr.user') ?: System.getenv('GPR_USER')
+        password = project.findProperty('gpr.key') ?: System.getenv('GPR_API_KEY')
+    }
+}
+
+// helper function to return a "curried" closure
+Closure GitHubPackages() {
+    return GitHubPackagesClosure.curry()
+}
+
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenLocal()
+    maven GitHubPackages()
 }
 
 task sourcesJar(type: Jar) {
@@ -33,16 +48,18 @@ task javadocJar(type: Jar) {
     from javadoc.destinationDir
 }
 
-//publishing {
-//    //...
-//    publications {
-//        mavenJava(MavenPublication) {
-//            from components.java
-//            artifact tasks.sourceJar
-//            //artifact tasks.yourJavadocTask
-//        }
-//    }
-//}
+publishing {
+    repositories {
+        maven GitHubPackages()
+    }
+    publications {
+        gpr(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
 
 jar {
     manifest {
