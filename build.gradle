@@ -9,25 +9,31 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
-    id 'maven'
     id 'maven-publish'
 }
 
 group 'gov.nasa.nas'
 version '0.2.2-beta-02'
 
-ext.GitHubPackagesClosure = {
-    name = 'GitHubPackages'
-    url = uri('https://maven.pkg.github.com/HPC-ULL/SBCs-EnergyEfficiency')
-    credentials {
-        username = project.findProperty('gpr.user') ?: System.getenv('GPR_USER')
-        password = project.findProperty('gpr.key') ?: System.getenv('GPR_API_KEY')
+subprojects {
+    apply plugin: "maven-publish"
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/HPC-ULL/SBCs-EnergyEfficiency")
+                credentials {
+                    username = project.findProperty("gpr.user")
+                    password = project.findProperty("gpr.key")
+                }
+            }
+        }
+        publications {
+            gpr(MavenPublication) {
+                from(components.java)
+            }
+        }
     }
-}
-
-// helper function to return a "curried" closure
-Closure GitHubPackages() {
-    return GitHubPackagesClosure.curry()
 }
 
 repositories {
@@ -35,7 +41,6 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenLocal()
-    maven GitHubPackages()
 }
 
 task sourcesJar(type: Jar) {
@@ -46,19 +51,6 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
     from javadoc.destinationDir
-}
-
-publishing {
-    repositories {
-        maven GitHubPackages()
-    }
-    publications {
-        gpr(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
 }
 
 jar {
@@ -80,22 +72,13 @@ gradle.taskGraph.whenReady { taskGraph ->
     } else if (taskGraph.hasTask(buildDebug)) {
         compileJava.options.debug = true
         project.version = version + '-debug'
-    } else if (taskGraph.hasTask(installRelease)) {
-        compileJava.options.debug = false
-    } else if (taskGraph.hasTask(installDebug)) {
-        compileJava.options.debug = true
-        project.version = version + '-debug'
-        jar.archiveFileName = version + '-debug'
     }
 }
 
 task buildRelease(type: GradleBuild, dependsOn: build) {}
 task buildDebug(type: GradleBuild, dependsOn: build) {}
 
-task installRelease(type: GradleBuild, dependsOn: install) {}
-task installDebug(type: GradleBuild, dependsOn: install) {}
-
 dependencies {
     testImplementation 'junit:junit:4.12'
-    implementation 'es.ull.hpcg:matrix-lib:0.5.3-beta-04'
+    implementation 'es.ull.hpcg:matrix-lib:0.6-beta-02'
 }
