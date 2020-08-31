@@ -20,8 +20,17 @@ ext.GitHubPackagesClosure = {
     name = 'GitHubPackages'
     url = uri('https://maven.pkg.github.com/HPC-ULL/SBCs-EnergyEfficiency')
     credentials {
-        username = project.findProperty('gpr.user') ?: System.getenv('GPR_USER')
-        password = project.findProperty('gpr.key') ?: System.getenv('GPR_API_KEY')
+        /*
+        Properties 'gpr.user' and 'gpr.key' are declared in gradle.gradleUserHomeDir
+        directory (usually /home/<user>/.gradle/ or equivalent for different OS) in
+        gradle.properties file.
+        Partially inspired by
+        https://stablekernel.com/article/creating-keystores-and-signing-android-apps/ ,
+        https://developer.android.com/studio/publish/app-signing.html#secure_key and
+        https://discuss.gradle.org/t/gradle-gradle-properties-file-not-being-read/7574
+        */
+        username = project.property('gpr.user')
+        password = project.property('gpr.key')
     }
 }
 
@@ -97,5 +106,5 @@ task installDebug(type: GradleBuild, dependsOn: install) {}
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    implementation 'es.ull.hpcg:matrix-lib:0.5.3-beta-04'
+    implementation 'es.ull.hpcg:matrix-lib:0.5.3-beta-05'
 }
